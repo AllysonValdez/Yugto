@@ -1,24 +1,24 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Overview/optionsmenu.png" type="Texture" id=1]
-[ext_resource path="res://AldotheApache.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Assets/Fonts/AldotheApache.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://Overview/Knob.png" type="Texture" id=3]
-[ext_resource path="res://bg.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/bg.png" type="Texture" id=4]
 
 [sub_resource type="StyleBoxTexture" id=1]
 texture = ExtResource( 1 )
 region_rect = Rect2( 0, 0, 500, 500 )
 
 [sub_resource type="DynamicFont" id=2]
+size = 75
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
 size = 48
 font_data = ExtResource( 2 )
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 1, 0.537255, 0, 1 )
-
-[sub_resource type="DynamicFont" id=4]
-size = 100
-font_data = ExtResource( 2 )
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -49,80 +49,85 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 3.98157
-margin_top = -2.27518
-margin_right = 3.98157
-margin_bottom = -2.27518
-alignment = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/HBoxContainer"]
-margin_left = 194.0
-margin_right = 306.0
-margin_bottom = 500.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/HBoxContainer/VBoxContainer"]
-margin_right = 112.0
-margin_bottom = 41.0
-alignment = 1
-
-[node name="Label" type="Label" parent="Panel/HBoxContainer/VBoxContainer/HBoxContainer"]
-margin_right = 112.0
-margin_bottom = 41.0
+[node name="Label-Options" type="Label" parent="Panel"]
+margin_left = 110.0
+margin_top = 12.0
+margin_right = 416.0
+margin_bottom = 75.0
 custom_fonts/font = SubResource( 2 )
-custom_colors/font_color_shadow = Color( 1, 0.4, 0, 1 )
-text = "MUSIC"
-
-[node name="HSlider" type="HSlider" parent="Panel/HBoxContainer/VBoxContainer/HBoxContainer/Label"]
-margin_left = -73.7485
-margin_top = 24.4347
-margin_right = 191.252
-margin_bottom = 99.4347
-custom_icons/grabber_highlight = ExtResource( 3 )
-custom_icons/grabber = ExtResource( 3 )
-custom_styles/grabber_area = SubResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/HBoxContainer/VBoxContainer"]
-margin_top = 45.0
-margin_right = 112.0
-margin_bottom = 86.0
-alignment = 1
-
-[node name="Label" type="Label" parent="Panel/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_right = 112.0
-margin_bottom = 41.0
-custom_fonts/font = SubResource( 2 )
-custom_colors/font_color_shadow = Color( 1, 0.4, 0, 1 )
-text = "MUSIC"
-
-[node name="HSlider" type="HSlider" parent="Panel/HBoxContainer/VBoxContainer/HBoxContainer2/Label"]
-margin_left = -73.7485
-margin_top = 24.4347
-margin_right = 191.252
-margin_bottom = 99.4347
-custom_icons/grabber_highlight = ExtResource( 3 )
-custom_icons/grabber = ExtResource( 3 )
-custom_styles/grabber_area = SubResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="Panel"]
-margin_left = 93.8598
-margin_top = 93.8598
-margin_right = 412.86
-margin_bottom = 177.86
-custom_fonts/font = SubResource( 4 )
 custom_colors/font_color_shadow = Color( 1, 0.521569, 0, 1 )
 text = "OPTIONS"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="OptionsInputContainer" type="VBoxContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 22.0
+margin_top = 99.0
+margin_right = -18.001
+margin_bottom = -19.0
+rect_min_size = Vector2( 460, 382 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SoundBoxContainer" type="VBoxContainer" parent="Panel/OptionsInputContainer"]
+margin_right = 460.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 455, 90 )
+
+[node name="Label" type="Label" parent="Panel/OptionsInputContainer/SoundBoxContainer"]
+margin_right = 460.0
+margin_bottom = 41.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_shadow = Color( 1, 0.4, 0, 1 )
+text = "SOUND"
+
+[node name="HSlider" type="HSlider" parent="Panel/OptionsInputContainer/SoundBoxContainer"]
+margin_top = 45.0
+margin_right = 460.0
+margin_bottom = 80.0
+custom_icons/grabber_highlight = ExtResource( 3 )
+custom_icons/grabber = ExtResource( 3 )
+custom_styles/grabber_area = SubResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MusicBoxContainer2" type="VBoxContainer" parent="Panel/OptionsInputContainer"]
+margin_top = 94.0
+margin_right = 460.0
+margin_bottom = 184.0
+rect_min_size = Vector2( 455, 90 )
+
+[node name="Label" type="Label" parent="Panel/OptionsInputContainer/MusicBoxContainer2"]
+margin_right = 460.0
+margin_bottom = 41.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_shadow = Color( 1, 0.4, 0, 1 )
+text = "MUSIC"
+
+[node name="HSlider" type="HSlider" parent="Panel/OptionsInputContainer/MusicBoxContainer2"]
+margin_top = 45.0
+margin_right = 460.0
+margin_bottom = 80.0
+custom_icons/grabber_highlight = ExtResource( 3 )
+custom_icons/grabber = ExtResource( 3 )
+custom_styles/grabber_area = SubResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ControlBoxContainer" type="VBoxContainer" parent="Panel/OptionsInputContainer"]
+margin_top = 188.0
+margin_right = 460.0
+margin_bottom = 378.0
+rect_min_size = Vector2( 460, 190 )
+alignment = 2
+
+[node name="TextureButton" type="TextureButton" parent="Panel/OptionsInputContainer/ControlBoxContainer"]
+margin_top = 190.0
+margin_right = 460.0
+margin_bottom = 190.0
