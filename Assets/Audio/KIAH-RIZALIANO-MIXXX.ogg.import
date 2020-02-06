@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/KIAH-RIZALIANO-MIXXX.ogg-6599240085adfc961b37e01a79b17f98.oggstr"
+
+[deps]
+
+source_file="res://Assets/Audio/KIAH-RIZALIANO-MIXXX.ogg"
+dest_files=[ "res://.import/KIAH-RIZALIANO-MIXXX.ogg-6599240085adfc961b37e01a79b17f98.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,7 @@
+[gd_scene format=2]
+
+[node name="towertemplate" type="Node2D"]
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Node2D"]

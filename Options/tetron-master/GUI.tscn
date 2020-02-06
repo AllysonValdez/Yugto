@@ -1,0 +1,158 @@
+[gd_scene format=2]
+
+[node name="GUI" type="CenterContainer"]
+pause_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -3.54232
+margin_top = 8.5321
+margin_right = -3.5423
+margin_bottom = 8.5321
+size_flags_horizontal = 0
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="PanelContainer" parent="."]
+margin_left = 521.0
+margin_top = 257.0
+margin_right = 758.0
+margin_bottom = 463.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 230.0
+margin_bottom = 199.0
+size_flags_horizontal = 0
+
+[node name="Left" type="CenterContainer" parent="Panel/HBoxContainer"]
+margin_right = 200.0
+margin_bottom = 192.0
+rect_min_size = Vector2( 200, 0 )
+
+[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/Left"]
+margin_left = 59.0
+margin_right = 141.0
+margin_bottom = 192.0
+custom_constants/separation = 20
+
+[node name="CenterContainer" type="CenterContainer" parent="Panel/HBoxContainer/Left/VBox"]
+margin_right = 82.0
+
+[node name="NewGame" type="Button" parent="Panel/HBoxContainer/Left/VBox"]
+margin_top = 20.0
+margin_right = 82.0
+margin_bottom = 40.0
+text = "New Game"
+
+[node name="Pause" type="Button" parent="Panel/HBoxContainer/Left/VBox"]
+margin_top = 60.0
+margin_right = 82.0
+margin_bottom = 80.0
+text = "Pause"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/HBoxContainer/Left/VBox"]
+margin_top = 100.0
+margin_right = 82.0
+margin_bottom = 116.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Left/VBox/HBox"]
+margin_top = 1.0
+margin_right = 38.0
+margin_bottom = 15.0
+text = "Music"
+
+[node name="Music" type="HSlider" parent="Panel/HBoxContainer/Left/VBox/HBox"]
+margin_left = 42.0
+margin_right = 82.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+min_value = -24.0
+max_value = 0.0
+ticks_on_borders = true
+
+[node name="HBox2" type="HBoxContainer" parent="Panel/HBoxContainer/Left/VBox"]
+margin_top = 136.0
+margin_right = 82.0
+margin_bottom = 152.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Left/VBox/HBox2"]
+margin_top = 1.0
+margin_right = 39.0
+margin_bottom = 15.0
+text = "Sound"
+
+[node name="Sound" type="HSlider" parent="Panel/HBoxContainer/Left/VBox/HBox2"]
+margin_left = 43.0
+margin_right = 82.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+min_value = -24.0
+max_value = 0.0
+
+[node name="About" type="Button" parent="Panel/HBoxContainer/Left/VBox"]
+margin_top = 172.0
+margin_right = 82.0
+margin_bottom = 192.0
+text = "About"
+
+[node name="Right" type="MarginContainer" parent="Panel/HBoxContainer"]
+margin_left = 204.0
+margin_right = 223.0
+margin_bottom = 192.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="ColorRect" type="ColorRect" parent="Panel/HBoxContainer/Right"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 11.0
+margin_bottom = 184.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="Grid" type="GridContainer" parent="Panel/HBoxContainer/Right"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 11.0
+margin_bottom = 184.0
+custom_constants/vseparation = 1
+custom_constants/hseparation = 1
+columns = 10
+
+[node name="Cell" type="TextureRect" parent="Panel/HBoxContainer/Right/Grid"]
+
+[node name="Cell2" type="TextureRect" parent="Panel/HBoxContainer/Right/Grid"]
+margin_left = 1.0
+margin_right = 1.0
+
+[node name="Cell3" type="TextureRect" parent="Panel/HBoxContainer/Right/Grid"]
+margin_left = 2.0
+margin_right = 2.0
+
+[node name="Cell4" type="TextureRect" parent="Panel/HBoxContainer/Right/Grid"]
+margin_left = 3.0
+margin_right = 3.0
+
+[node name="AboutBox" type="AcceptDialog" parent="."]
+margin_left = 508.0
+margin_top = 280.0
+margin_right = 771.0
+margin_bottom = 440.0
+window_title = "Tetron"
+dialog_text = "Space bar - Hard drop
+Down arrow - Soft drop
+Left arrow - move left
+Right arrow - move right
+Up arrow - rotate clockwise
+Shift + Up arrow - rotate anti-clockwise
+Page Up - increase level on each press"
+[connection signal="button_down" from="Panel/HBoxContainer/Left/VBox/NewGame" to="." method="_on_NewGame_button_down"]
+[connection signal="button_down" from="Panel/HBoxContainer/Left/VBox/Pause" to="." method="_on_Pause_button_down"]
+[connection signal="value_changed" from="Panel/HBoxContainer/Left/VBox/HBox/Music" to="." method="_on_Music_value_changed"]
+[connection signal="value_changed" from="Panel/HBoxContainer/Left/VBox/HBox2/Sound" to="." method="_on_Sound_value_changed"]
+[connection signal="button_down" from="Panel/HBoxContainer/Left/VBox/About" to="." method="_on_About_button_down"]
+[connection signal="popup_hide" from="AboutBox" to="." method="_on_AboutBox_popup_hide"]

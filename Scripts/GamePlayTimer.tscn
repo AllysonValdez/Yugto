@@ -1,0 +1,67 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Scripts/GamePlayTimer.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.654902, 0.894118, 0.227451, 0.54902 )
+
+[sub_resource type="DynamicFontData" id=2]
+font_path = "res://Assets/Fonts/AldotheApache.ttf"
+
+[sub_resource type="DynamicFont" id=3]
+size = 32
+font_data = SubResource( 2 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 42
+font_data = SubResource( 2 )
+
+[node name="GamePlayTimer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 360, 80 )
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label-Game-Timer" type="Label" parent="Panel"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 223.0
+margin_bottom = 37.0
+rect_min_size = Vector2( 200, 32 )
+custom_fonts/font = SubResource( 3 )
+text = "Game Play Time:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label-Time-Counter" type="Label" parent="Panel"]
+margin_left = 101.0
+margin_top = 40.0
+margin_right = 281.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 90, 40 )
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0.705882, 0.407843, 0.0862745, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_constants/shadow_as_outline = 3
+text = "00 M : 00 S"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
