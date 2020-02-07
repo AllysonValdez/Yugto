@@ -1,29 +1,32 @@
-extends Node2D
+extends StaticBody2D
 
 var timestamp_class = preload("res://Scripts/Timestamp.gd")
 var myState = 0
 var shield_collapse_time = timestamp_class.timestamp.new()
 
-signal shieldhit
-
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	$AnimatedSprite.visible = false
+func _private_init():
+	print("EnergyShield, _ready called()")
+	#$AnimatedSprite.visible = false
 	$AnimatedSprite.play("default")
+
+#func _init():
+#	_private_init()
+
+func _ready():
+	_private_init()
 
 func start_deploy():
 	visible = true
 	$AnimatedSprite.visible = true
 	$AnimatedSprite.play("deploy")
+	print("EnergyShield, start_deploy called(), position=%s" % [position])
 	myState = 1
 
 func finish_shield_consumed():
+	visible = true
 	$AnimatedSprite.play("collapse")
 	myState = 3
-
-func take_hit():
-	#Deplete the shield if it is close to the end of life
-	emit_signal("shieldhit")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -39,6 +42,7 @@ func _process(delta):
 	if (myState == 3):
 		shield_collapse_time.reset_time()
 		myState = 4
+		queue_free()
 
 func _on_EnergyShield_body_entered(body):
 	print("EnergyShield, _on_EnergyShield_body_entered, body=%s" % [body.name])

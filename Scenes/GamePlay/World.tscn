@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://tiles1.tres" type="TileSet" id=1]
 [ext_resource path="res://Scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -9,7 +9,6 @@
 [ext_resource path="res://Assets/Images/tree1.png" type="Texture" id=7]
 [ext_resource path="res://Assets/Images/bush.png" type="Texture" id=8]
 [ext_resource path="res://Scenes/Defense/DefenceMissile.tscn" type="PackedScene" id=9]
-[ext_resource path="res://Scenes/Blimp/Blimp.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/GamePlay/World.gd" type="Script" id=11]
 [ext_resource path="res://Scripts/GamePlayTimer.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scenes/Defense/EnergyShield.tscn" type="PackedScene" id=13]
@@ -157,19 +156,12 @@ __meta__ = {
 [node name="Defence" parent="." instance=ExtResource( 9 )]
 position = Vector2( 369.098, 578.253 )
 
-[node name="Blimp" parent="." instance=ExtResource( 10 )]
-position = Vector2( 1380.73, 64.4201 )
-
 [node name="Building" parent="." instance=ExtResource( 3 )]
 position = Vector2( 551.684, 502.698 )
 scale = Vector2( 2.49439, 2.2757 )
 
 [node name="EnergyShield-1" parent="." instance=ExtResource( 13 )]
 position = Vector2( 548.081, 432.215 )
-
-[node name="EnergyShield-2" parent="." instance=ExtResource( 13 )]
-visible = false
-position = Vector2( 503.134, 515.669 )
 
 [node name="GamePlayTimer" parent="." instance=ExtResource( 12 )]
 
