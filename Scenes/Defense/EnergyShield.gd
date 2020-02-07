@@ -4,6 +4,8 @@ var timestamp_class = preload("res://Scripts/Timestamp.gd")
 var myState = 0
 var shield_collapse_time = timestamp_class.timestamp.new()
 
+signal shieldhit
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$AnimatedSprite.visible = false
@@ -19,6 +21,10 @@ func finish_shield_consumed():
 	$AnimatedSprite.play("collapse")
 	myState = 3
 
+func take_hit():
+	#Deplete the shield if it is close to the end of life
+	emit_signal("shieldhit")
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (myState == 4):
@@ -33,3 +39,6 @@ func _process(delta):
 	if (myState == 3):
 		shield_collapse_time.reset_time()
 		myState = 4
+
+func _on_EnergyShield_body_entered(body):
+	print("EnergyShield, _on_EnergyShield_body_entered, body=%s" % [body.name])

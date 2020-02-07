@@ -12,7 +12,6 @@
 [ext_resource path="res://Assets/Sprites/energy_shield_collapse4.png" type="Texture" id=10]
 [ext_resource path="res://Assets/Sprites/energy_shield_collapse2.png" type="Texture" id=11]
 
-
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 1 ) ],
@@ -20,20 +19,25 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 6 ) ],
-"loop": false,
-"name": "deploy",
-"speed": 8.0
-}, {
 "frames": [ ExtResource( 8 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 10 ) ],
 "loop": false,
 "name": "collapse",
 "speed": 8.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "deploy",
+"speed": 8.0
 } ]
 
-[node name="EnergyShield" type="Node2D"]
+[node name="EnergyShield" type="Area2D"]
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 1.3, 1.3 )
 frames = SubResource( 1 )
 animation = "collapse"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 0, -55, 56, -35, 72, -6, 81, 26, 32, 54, -29, 53, -79, 28, -72, -10, -49, -36 )
+[connection signal="body_entered" from="." to="." method="_on_EnergyShield_body_entered"]

@@ -8,7 +8,7 @@
 [ext_resource path="res://Assets/Images/menufordefense.png" type="Texture" id=6]
 [ext_resource path="res://Assets/Images/tree1.png" type="Texture" id=7]
 [ext_resource path="res://Assets/Images/bush.png" type="Texture" id=8]
-[ext_resource path="res://Scenes/Defense/defence.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Scenes/Defense/DefenceMissile.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scenes/Blimp/Blimp.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/GamePlay/World.gd" type="Script" id=11]
 [ext_resource path="res://Scripts/GamePlayTimer.tscn" type="PackedScene" id=12]
@@ -165,7 +165,7 @@ position = Vector2( 551.684, 502.698 )
 scale = Vector2( 2.49439, 2.2757 )
 
 [node name="EnergyShield-1" parent="." instance=ExtResource( 13 )]
-position = Vector2( 557.081, 498.215 )
+position = Vector2( 548.081, 432.215 )
 
 [node name="EnergyShield-2" parent="." instance=ExtResource( 13 )]
 visible = false
