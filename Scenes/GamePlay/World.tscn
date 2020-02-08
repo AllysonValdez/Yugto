@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://tiles1.tres" type="TileSet" id=1]
 [ext_resource path="res://Scenes/Player/Player.tscn" type="PackedScene" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://Scenes/GamePlay/World.gd" type="Script" id=11]
 [ext_resource path="res://Scripts/GamePlayTimer.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scenes/Defense/EnergyShield.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Scenes/Defense/FlakCannon.tscn" type="PackedScene" id=14]
 
 [node name="World" type="Node2D"]
 script = ExtResource( 11 )
@@ -161,6 +162,9 @@ position = Vector2( 369.098, 578.253 )
 position = Vector2( 551.684, 502.698 )
 scale = Vector2( 2.49439, 2.2757 )
 
+[node name="FlakCannon" parent="." instance=ExtResource( 14 )]
+position = Vector2( 934.072, 470.914 )
+
 [node name="EnergyShield-1" parent="." instance=ExtResource( 13 )]
 position = Vector2( 548.081, 432.215 )
 
@@ -180,4 +184,6 @@ position = Vector2( 631.579, 156.233 )
 
 [node name="player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 765.458, 551.349 )
+
+[node name="AudioStreamPlayer-Music" type="AudioStreamPlayer" parent="."]
 [connection signal="timeout" from="GameTimer" to="." method="_on_GameTimer_timeout"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_fire4.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_fire1.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_normal.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_fire2.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_fire3.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Sprites/Flak-Cannon/flak_cannon_fire5.png" type="Texture" id=6]
+[ext_resource path="res://Scenes/Defense/FlakCannon.gd" type="Script" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 1 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "fire",
+"speed": 10.0
+} ]
+
+[node name="FlakCannon" type="KinematicBody2D"]
+script = ExtResource( 7 )
+
+[node name="Animated-Selections" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "fire"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 8, -1, 8, -85, -10, -85, -11, -1, -24, 32, -24, 86, 54, 87, 53, 69, 23, 64 )

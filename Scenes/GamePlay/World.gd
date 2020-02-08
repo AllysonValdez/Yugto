@@ -11,12 +11,13 @@ onready var blimp = $Blimp
 onready var defence = $Defence
 
 const SHIELD_DURATION = 12000
-const SHIELD_RECHARGE_TIME = 3000 #8000
+const SHIELD_RECHARGE_TIME = 2500 #8000
 const GAME_FINISHED_VICTORY = "res://Scenes/GamePlay/OutcomeVictory.tscn"
 const GAME_FINISHED_DEFEAT = "res://Scenes/GamePlay/OutcomeGameOver/GameOver.tscn"
 const BLIMP_RAIL1 = 60
 const BLIMP_RAIL2 = 100
 const BLIMP_RAIL3 = 150
+const DEFENSE_TOPUP_BONUS_THRESHOLD = 80
 
 var bullet_scene = load("res://Scenes/Bullet/Bullet.tscn")
 var bomb_scene = load("res://Scenes/Bomb/Bomb.tscn")
@@ -24,6 +25,7 @@ var num_activated_shields = 0
 var extra_shield_allowance = false
 var current_attack_wave = 1
 var screen_size
+var background_music_volume = 0.1
 var map_spawn_blimps = { }
 var map_shields_reference = { }
 var attack_waves_complete = [false, false, false] # 3 attack waves for the moment
@@ -53,6 +55,32 @@ func create_test_shields():
 		shieldx.visible = true
 		shieldx.start_deploy()
 
+func apply_bonus_defense_topup(wave_num):
+	var defense_ratio = building.health_bar.value / building.get_full_health()
+	print("World, apply_bonus_defense_topup(), wave=%d, defense_ratio=%f" % [wave_num, defense_ratio])
+	if defense_ratio >= (DEFENSE_TOPUP_BONUS_THRESHOLD / 100.0):
+		pass
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var max_adjust = 0.6
+	var min_adjust = 0.4
+	match wave_num:
+		1:
+			min_adjust = 0.3
+			max_adjust = 0.5
+		2:
+			min_adjust = 0.4
+			max_adjust = 0.6
+		3:
+			min_adjust = 0.5
+			max_adjust = 0.7
+	var defense_topup = rng.randf_range(min_adjust, max_adjust)
+	var topup_value = building.health_bar.value + (defense_topup * building.get_full_health())
+	if topup_value > (0.9 * building.get_full_health()):
+		topup_value = 0.9 * building.get_full_health()
+	building.health_bar.value = topup_value
+	print("World, apply_bonus_defense_topup(), defense_topup=%f" % [defense_topup])
+
 func _ready() -> void:
 	game_start_time.reset_time()
 	randomize()
@@ -67,7 +95,27 @@ func _ready() -> void:
 	#spawn_enemy_blimp("blimp_velvet#3")
 	$"EnergyShield-1".position = Vector2(-1000.0, -500.0) #Must not be placed in the game world, because only clones used
 	$GamePlayTimer.start_timer()
+	load_background_music("res://Assets/Audio/KIAH-RIZALIANO-MIXXX.ogg")
+	var musicvolume_percentage = GlobalState.music_volume
+	background_music_volume = adjust_proportional_audio_volume(musicvolume_percentage)
 	#create_test_shields()
+
+func adjust_proportional_audio_volume(percentage_volume) -> float:
+	var res : float = 0.0
+	return res
+
+func load_background_music(audio_resource):
+	if audio_resource != null:
+		#music_audiostream = AudioStream()
+		$"AudioStreamPlayer-Music".stream = load(audio_resource)
+
+func play_background_music(play, volume):
+	if play:
+		$"AudioStreamPlayer-Music".play()
+		if volume > 0.0:
+			$"AudioStreamPlayer-Music".volume_db = volume
+	else:
+		$"AudioStreamPlayer-Music".stop()
 
 func create_blimp(modcolor : Color):
 	var new_blimp = blimp_class.instance()
@@ -202,6 +250,15 @@ func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
 		$GamePlayTimer.set_pause(true)
 		game_pause_time.reset_time()
+	if Input.is_action_just_pressed("alt_fire"):
+		if $FlakCannon.cooled_down():
+			$FlakCannon.fire_volley()
+	if Input.is_action_just_pressed("tilt_left") or Input.is_action_just_pressed("tilt_right"):
+		print("World, _input(), event=%s, key=%s" % [event, event.to_string()])
+		if event.is_action("tilt_left"):
+			$FlakCannon.rotation_to_left()
+		if event.is_action("tilt_right"):
+			$FlakCannon.rotation_to_right()
 
 func launch_bomb(blimp_name):
 	if blimp_name != null and map_spawn_blimps.has(blimp_name):
@@ -262,9 +319,11 @@ func _on_GameTimer_timeout():
 			attack_waves_complete[0] = true
 			intro_wave_banner(1)
 			launch_blimps_wave(1)
+			play_background_music(true, background_music_volume)
 	if ticks_game_running >= 88000 and ticks_game_running < 89000 and blimp_waves_destructed[0] == false: # destruct the blimps in wave 1
 		blimp_waves_destructed[0] = true
 		destruct_blimp_waves(1)
+		apply_bonus_defense_topup(1)
 	if ticks_game_running >= 90000 and ticks_game_running < 91000: # Check if wave 2 should be launched
 		if attack_waves_complete[1] == false:
 			attack_waves_complete[1] = true
@@ -273,6 +332,7 @@ func _on_GameTimer_timeout():
 	if ticks_game_running >= 178000 and ticks_game_running < 179000 and blimp_waves_destructed[1] == false: # destruct the blimps in wave 2
 		blimp_waves_destructed[1] = true
 		destruct_blimp_waves(2)
+		apply_bonus_defense_topup(2)
 	if ticks_game_running >= 180000 and ticks_game_running < 181000: # Wave 3
 		if attack_waves_complete[2] == false:
 			attack_waves_complete[2] = true
