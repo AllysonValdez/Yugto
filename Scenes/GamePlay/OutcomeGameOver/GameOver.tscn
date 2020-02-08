@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://GameOver/lose.png" type="Texture" id=1]
-[ext_resource path="res://GameOver/TryAgain.png" type="Texture" id=2]
-[ext_resource path="res://GameOver/TryAgainFocused.png" type="Texture" id=3]
-[ext_resource path="res://GameOver.gd" type="Script" id=5]
+[ext_resource path="res://Assets/Images/Outcomes/lose.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Images/Outcomes/TryAgain.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/Outcomes/TryAgainFocused.png" type="Texture" id=3]
+[ext_resource path="res://Scenes/GamePlay/OutcomeGameOver/GameOver.gd" type="Script" id=5]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 5 )

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Assets/Images/Waves/wave3.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Images/Waves/wave2.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/Waves/wave1.png" type="Texture" id=3]
+[ext_resource path="res://Scenes/UI/WaveBanner.gd" type="Script" id=4]
+
+[node name="WaveBanner" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="Sprite-Wave1" type="Sprite" parent="."]
+texture = ExtResource( 3 )
+
+[node name="Sprite-Wave2" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 2 )
+
+[node name="Sprite-Wave3" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
