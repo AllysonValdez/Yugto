@@ -19,6 +19,10 @@ config/name="YugtoTheGame1"
 run/main_scene="res://Scenes/UI/TitleScreen.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GlobalState="*res://Scripts/GlobalState.gd"
+
 [display]
 
 window/size/width=1280
@@ -49,6 +53,21 @@ shield_activate={
 Fire={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":70,"unicode":0,"echo":false,"script":null)
+ ]
+}
+tilt_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":44,"unicode":0,"echo":false,"script":null)
+ ]
+}
+tilt_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null)
+ ]
+}
+alt_fire={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777240,"unicode":0,"echo":false,"script":null)
  ]
 }
 
