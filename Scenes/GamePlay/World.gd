@@ -10,6 +10,8 @@ onready var building = $Building
 onready var blimp = $Blimp
 onready var defence = $Defence
 
+const GAME_CLEARANCE_TIMESLOT1 = 60000 # 1 minute below time alllowance
+const GAME_CLEARANCE_TIMESLOT2 = 120000
 const GAME_SURVIVE_COUNTDOWN = 300000 # 300 seconds -> 5 minutes
 const SHIELD_DURATION = 12000
 const SHIELD_RECHARGE_TIME = 2500 #8000
@@ -24,7 +26,9 @@ var bullet_scene = load("res://Scenes/Bullet/Bullet.tscn")
 var bomb_scene = load("res://Scenes/Bomb/Bomb.tscn")
 var num_activated_shields = 0
 var extra_shield_allowance = false
-var current_attack_wave = 1
+var game_win_closeflag = false
+var current_attack_wave = 1 #1
+var clearance_bonus = 0
 var screen_size
 var background_music_volume = 0.1
 var map_spawn_blimps = { }
@@ -38,6 +42,7 @@ var blimps_active_session = [ ] # An array that holds the blimps
 var shield1_activated_time = timestamp_class.timestamp.new()
 var shield2_activated_time = timestamp_class.timestamp.new()
 var game_start_time = timestamp_class.timestamp.new()
+var game_finished_time = timestamp_class.timestamp.new()
 var game_pause_time = timestamp_class.timestamp.new()
 var game_current_time = timestamp_class.timestamp.new()
 var check_wave_completion = timestamp_class.timestamp.new()
@@ -90,6 +95,7 @@ func apply_bonus_defense_topup(wave_num):
 
 func _ready() -> void:
 	game_start_time.reset_time()
+	game_finished_time.reset_time()
 	check_wave_completion.reset_time()
 	randomize()
 	defence.connect("shoot", self, "shoot")
@@ -296,7 +302,7 @@ func _input(event):
 		if $FlakCannon.cooled_down():
 			$FlakCannon.fire_volley()
 	if Input.is_action_just_pressed("tilt_left") or Input.is_action_just_pressed("tilt_right"):
-		print("World, _input(), event=%s, key=%s" % [event, event.to_string()])
+		#print("World, _input(), event=%s, key=%s" % [event, event.to_string()])
 		if event.is_action("tilt_left"):
 			$FlakCannon.rotation_to_left()
 		if event.is_action("tilt_right"):
@@ -355,6 +361,12 @@ func intro_wave_banner(wave_num):
 func _on_GameTimer_timeout():
 	#Time the blimp and other timer related operations
 	game_current_time.reset_time()
+	if current_attack_wave == 4:
+		var ticks_game_finished_win = game_current_time.subtract_ticks(game_finished_time)
+		#print("World, _on_GameTimer_timeout(), Game Finish, ticks_game_finished_win=%f" % [ticks_game_finished_win])
+		if ticks_game_finished_win >= 3000 and game_win_closeflag == false:
+			game_win_closeflag = true
+			scene_utility.change_scene(self, GAME_FINISHED_VICTORY)
 	var ticks_game_running = game_current_time.subtract_ticks(game_start_time)
 	if ticks_game_running >= 15000: # Only start checking for wave completion from 15 secs onwards
 		var ticks_check_wave_done = game_current_time.subtract_ticks(check_wave_completion)
@@ -367,39 +379,47 @@ func _on_GameTimer_timeout():
 			intro_wave_banner(1)
 			launch_blimps_wave(1)
 			play_background_music(true, background_music_volume)
-	if ticks_game_running < 87000 and attack_wave_is_cleared(1):
+	if ticks_game_running < 87000 and attack_wave_is_cleared(1) and blimp_waves_destructed[0] == false:
 		blimp_waves_destructed[0] = true
 		apply_bonus_defense_topup(1)
 	if ticks_game_running >= 88000 and ticks_game_running < 89000 and blimp_waves_destructed[0] == false: # destruct the blimps in wave 1
-		#current_attack_wave = 2
 		blimp_waves_destructed[0] = true
 		destruct_blimp_waves(1)
 		apply_bonus_defense_topup(1)
-	if attack_wave_is_cleared(1) or (ticks_game_running >= 90000 and ticks_game_running < 91000): # Check if wave 2 should be launched
+	if (current_attack_wave == 1 and attack_wave_is_cleared(1)) or (ticks_game_running >= 90000 and ticks_game_running < 91000): # Check if wave 2 should be launched
 		current_attack_wave = 2
 		if attack_waves_complete[1] == false:
 			attack_waves_complete[1] = true
 			intro_wave_banner(2)
 			launch_blimps_wave(2)
-	if ticks_game_running < 177000 and attack_wave_is_cleared(2):
+	if ticks_game_running < 177000 and attack_wave_is_cleared(2) and blimp_waves_destructed[1] == false:
 		blimp_waves_destructed[1] = true
 		apply_bonus_defense_topup(2)
 	if ticks_game_running >= 178000 and ticks_game_running < 179000 and blimp_waves_destructed[1] == false: # destruct the blimps in wave 2
 		blimp_waves_destructed[1] = true
 		destruct_blimp_waves(2)
 		apply_bonus_defense_topup(2)
-	if attack_wave_is_cleared(2) or (ticks_game_running >= 180000 and ticks_game_running < 181000): # Wave 3
+	if (current_attack_wave == 2 and attack_wave_is_cleared(2)) or (ticks_game_running >= 180000 and ticks_game_running < 181000): # Wave 3
 		current_attack_wave = 3
 		if attack_waves_complete[2] == false:
 			attack_waves_complete[2] = true
 			intro_wave_banner(3)
 			launch_blimps_wave(3)
-	if (current_attack_wave >= 3 and attack_wave_is_cleared(3)) or (ticks_game_running >= 299000 and ticks_game_running < 300000 and blimp_waves_destructed[2] == false): # destruct the blimps in wave 2		
-		destruct_blimp_waves(3)
-		if blimp_waves_destructed[2] == false:
-			var ticks_clearance_bonus = GAME_SURVIVE_COUNTDOWN - ticks_game_running
-		#determine if a significant amount of seconds is still left in the game (countdown) timer
-		blimp_waves_destructed[2] = true
+	if blimp_waves_destructed[2] == false:
+		# destruct the blimps in wave 3
+		if (current_attack_wave >= 3 and attack_wave_is_cleared(3)) or (ticks_game_running >= 299000 and ticks_game_running < 300000):
+			print("World, _on_GameTimer_timeout(), wave 3 defeated")
+			destruct_blimp_waves(3)
+			current_attack_wave = 4
+			game_finished_time.reset_time()
+			#determine if a significant amount of seconds is still left in the game (countdown) timer
+			var ticks_clearance_time = GAME_SURVIVE_COUNTDOWN - ticks_game_running
+			print("World, _on_GameTimer_timeout(), ticks_clearance_time (seconds)=%f" % [ticks_clearance_time / 1000.0])
+			if ticks_clearance_time >= GAME_CLEARANCE_TIMESLOT1:
+				clearance_bonus = 1
+			if ticks_clearance_time >= GAME_CLEARANCE_TIMESLOT2:
+				clearance_bonus = 2
+			blimp_waves_destructed[2] = true
 	if num_activated_shields > 0:
 		var current_time = timestamp_class.timestamp.new()
 		current_time.reset_time()

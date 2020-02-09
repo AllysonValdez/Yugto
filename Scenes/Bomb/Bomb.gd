@@ -5,7 +5,7 @@ var timestamp_class = preload("res://Scripts/Timestamp.gd")
 
 signal shieldhit(full_damage)
 
-export var base_damage = 12.0 # 18.0
+export var base_damage = 18.0 # 18.0
 var gravity_ = 100
 var shield_absorbed_time = timestamp_class.timestamp.new()
 var current_time = timestamp_class.timestamp.new()
