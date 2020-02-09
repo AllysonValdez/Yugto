@@ -23,10 +23,21 @@ class timestamp:
 	func get_millisecond():
 		return milli_second
 	func reset_time():
-		var timestamp1 = OS.get_datetime()
+		var timestamp1 = OS.get_datetime(true)
 		start_ticks = OS.get_ticks_msec()
 		current_ticks = start_ticks
 		#print("timestamp=", timestamp1)
+		hour = timestamp1.hour
+		minute = timestamp1.minute
+		second = timestamp1.second
+		milli_second = current_ticks % 1000
+	func reset_time_ticks(xticks):
+		start_ticks = OS.get_ticks_msec() + xticks
+		current_ticks = start_ticks
+		var unix_divs = OS.get_unix_time()
+		#print("Timestamp, reset_time_ticks(), unix_divs=%d" % [unix_divs])
+		#print("Timestamp, reset_time_ticks(), current_ticks=%d" % [current_ticks])
+		var timestamp1 = OS.get_datetime_from_unix_time(unix_divs + (xticks / 1000))
 		hour = timestamp1.hour
 		minute = timestamp1.minute
 		second = timestamp1.second

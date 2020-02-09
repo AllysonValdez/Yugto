@@ -4,9 +4,9 @@ signal health_updated(health)
 signal killed()
 
 const MOVE_SPEED = 500
-const JUMP_FORCE = 1000
-const GRAVITY = 50
-const MAX_FALL_SPEED = 1000
+const JUMP_FORCE = 1120
+const GRAVITY = 42
+const MAX_FALL_SPEED = 960
 
 export (float) var max_health = 100
 

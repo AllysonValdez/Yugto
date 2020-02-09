@@ -14,12 +14,15 @@ var speed = BLIMP_SPEED
 var reached_end = false
 var current_time = timestamp_class.timestamp.new()
 var screen_size
-signal bomb
+var blimp_name = ""
+var blimp_bombing_run = false
+signal bomb(blimp_id)
 
 func destroy_blimp():
 	blimp_state = 2
 	blimp_destroyed_time.reset_time()
 	visible = false
+	queue_free()
 
 func reset_blimp_state():
 	blimp_state = 0
@@ -42,6 +45,23 @@ func _ready():
 	position = Vector2(80.0, 105.0)
 	align_blimp(speed)
 
+func set_name(name):
+	blimp_name = name
+
+func start_bombing(bombing_run):
+	blimp_state = 0
+	blimp_moveswitch_time.reset_time()
+	blimp_bombing_run = bombing_run
+
+func set_modulate_color(modcolor):
+	$Sprite.modulate = modcolor
+
+func set_direction(direction):
+	if direction < 0:
+		speed = -BLIMP_SPEED
+	else:
+		speed = BLIMP_SPEED
+
 func align_blimp(speed):
 	if speed < 0:
 		$Sprite.flip_h = false
@@ -49,6 +69,8 @@ func align_blimp(speed):
 		$Sprite.flip_h = true
 
 func _physics_process(delta: float) -> void:
+	if !blimp_bombing_run:
+		pass
 	if blimp_state < 2:
 		current_time.reset_time()
 		var ticks_elapsed = current_time.subtract_ticks(blimp_moveswitch_time)
@@ -69,14 +91,14 @@ func _physics_process(delta: float) -> void:
 					position.x = screen_size.x - 120
 
 func _on_Area2D_body_entered(body: Node) -> void:
-	var bombchoice = rand_range(0, 5)
+	var bombchoice = int(rand_range(0, 5))
 	if (bombchoice <= 2) and body.is_in_group("building"):
-		emit_signal("bomb")
+		emit_signal("bomb", blimp_name)
 		bomb_dropped_time.reset_time()
 	else:
 		if (bombchoice == 3) and body.is_in_group("building-pre1"):
-			emit_signal("bomb")
+			emit_signal("bomb", blimp_name)
 			bomb_dropped_time.reset_time()
 		if (bombchoice > 3) and  body.is_in_group("building-pre2"):
-			emit_signal("bomb")
+			emit_signal("bomb", blimp_name)
 			bomb_dropped_time.reset_time()
