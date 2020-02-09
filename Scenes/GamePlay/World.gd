@@ -10,6 +10,7 @@ onready var building = $Building
 onready var blimp = $Blimp
 onready var defence = $Defence
 
+const GAME_SURVIVE_COUNTDOWN = 300000 # 300 seconds -> 5 minutes
 const SHIELD_DURATION = 12000
 const SHIELD_RECHARGE_TIME = 2500 #8000
 const GAME_FINISHED_VICTORY = "res://Scenes/GamePlay/OutcomeVictory.tscn"
@@ -28,6 +29,8 @@ var screen_size
 var background_music_volume = 0.1
 var map_spawn_blimps = { }
 var map_shields_reference = { }
+var map_early_wave_completion = { }
+var map_applied_defense_topup = { }
 var attack_waves_complete = [false, false, false] # 3 attack waves for the moment
 var blimp_waves_destructed = [false, false, false]
 var blimps_active_session = [ ] # An array that holds the blimps
@@ -37,6 +40,7 @@ var shield2_activated_time = timestamp_class.timestamp.new()
 var game_start_time = timestamp_class.timestamp.new()
 var game_pause_time = timestamp_class.timestamp.new()
 var game_current_time = timestamp_class.timestamp.new()
+var check_wave_completion = timestamp_class.timestamp.new()
 var scene_utility = scene_utility_class.SceneUtility.new()
 var game_state_keeper = gamestate_class.GameStateWrapper.new()
 
@@ -56,8 +60,10 @@ func create_test_shields():
 		shieldx.start_deploy()
 
 func apply_bonus_defense_topup(wave_num):
+	if map_applied_defense_topup.has(wave_num):
+		pass
 	var defense_ratio = building.health_bar.value / building.get_full_health()
-	print("World, apply_bonus_defense_topup(), wave=%d, defense_ratio=%f" % [wave_num, defense_ratio])
+	#print("World, apply_bonus_defense_topup(), wave=%d, defense_ratio=%f" % [wave_num, defense_ratio])
 	if defense_ratio >= (DEFENSE_TOPUP_BONUS_THRESHOLD / 100.0):
 		pass
 	var rng = RandomNumberGenerator.new()
@@ -79,10 +85,12 @@ func apply_bonus_defense_topup(wave_num):
 	if topup_value > (0.9 * building.get_full_health()):
 		topup_value = 0.9 * building.get_full_health()
 	building.health_bar.value = topup_value
+	map_applied_defense_topup[wave_num] = true
 	print("World, apply_bonus_defense_topup(), defense_topup=%f" % [defense_topup])
 
 func _ready() -> void:
 	game_start_time.reset_time()
+	check_wave_completion.reset_time()
 	randomize()
 	defence.connect("shoot", self, "shoot")
 	shield1_activated_time.reset_time_ticks(-(SHIELD_RECHARGE_TIME + SHIELD_DURATION + 3000))
@@ -230,6 +238,40 @@ func launch_blimps_wave(wave_num):
 		add_child(map_spawn_blimps["wave3#2"])
 		add_child(map_spawn_blimps["wave3#3"])
 
+func check_wave_completion(wave_num):
+	#map_early_wave_completion["wave1"] = true -- example
+	var blimps_vanquished = 0
+	if wave_num == 1:
+		if map_spawn_blimps["wave1#1"] == null or !weakref(map_spawn_blimps["wave1#1"]).get_ref():
+			map_early_wave_completion["wave1"] = true
+	if wave_num == 2:
+		if map_spawn_blimps["wave2#1"] == null or !weakref(map_spawn_blimps["wave2#1"]).get_ref():
+			blimps_vanquished += 1
+		if map_spawn_blimps["wave2#2"] == null or !weakref(map_spawn_blimps["wave2#2"]).get_ref():
+			blimps_vanquished += 1
+		if blimps_vanquished >= 2:
+			map_early_wave_completion["wave2"] = true
+	if wave_num == 3:
+		if map_spawn_blimps["wave3#1"] == null or !weakref(map_spawn_blimps["wave3#1"]).get_ref():
+			blimps_vanquished += 1
+		if map_spawn_blimps["wave3#2"] == null or !weakref(map_spawn_blimps["wave3#2"]).get_ref():
+			blimps_vanquished += 1
+		if map_spawn_blimps["wave3#3"] == null or !weakref(map_spawn_blimps["wave3#3"]).get_ref():
+			blimps_vanquished += 1
+		if blimps_vanquished >= 3:
+			map_early_wave_completion["wave3"] = true
+
+func attack_wave_is_cleared(wave_num) -> bool:
+	var key = ""
+	match wave_num:
+		1:
+			key = "wave1"
+		2:
+			key = "wave2"
+		3:
+			key = "wave3"
+	return map_early_wave_completion.has(key)
+
 func _input(event):
 	if !event is InputEventKey:
 		pass
@@ -268,7 +310,7 @@ func launch_bomb(blimp_name):
 		add_child(bomb)
 
 func _on_bomb_hit_shield(bomb_damage):
-	print("World, _on_bomb_hit_shield(), bomb_damage=%f" % [bomb_damage])
+	#print("World, _on_bomb_hit_shield(), bomb_damage=%f" % [bomb_damage])
 	# takes from 0 to 30% of the damage this particular bomb is capable of
 	var damage_reduce_factor = 0
 	var reduced_damage_cascaded = 0.0
@@ -280,7 +322,7 @@ func _on_bomb_hit_shield(bomb_damage):
 		1: damage_reduce_factor = 0.175
 		2: damage_reduce_factor = 0.3
 	reduced_damage_cascaded = damage_reduce_factor * bomb_damage
-	print("World, _on_bomb_hit_shield(), reduced damage=%f" % [reduced_damage_cascaded])
+	#print("World, _on_bomb_hit_shield(), reduced damage=%f" % [reduced_damage_cascaded])
 	$Building.take_damage(reduced_damage_cascaded)
 
 func shoot():
@@ -314,33 +356,50 @@ func _on_GameTimer_timeout():
 	#Time the blimp and other timer related operations
 	game_current_time.reset_time()
 	var ticks_game_running = game_current_time.subtract_ticks(game_start_time)
+	if ticks_game_running >= 15000: # Only start checking for wave completion from 15 secs onwards
+		var ticks_check_wave_done = game_current_time.subtract_ticks(check_wave_completion)
+		if ticks_check_wave_done >= 1000:
+			check_wave_completion.reset_time()
+			check_wave_completion(current_attack_wave)
 	if ticks_game_running >= 4000 and ticks_game_running < 5000: # Check if wave 1 should be launched
 		if attack_waves_complete[0] == false:
 			attack_waves_complete[0] = true
 			intro_wave_banner(1)
 			launch_blimps_wave(1)
 			play_background_music(true, background_music_volume)
+	if ticks_game_running < 87000 and attack_wave_is_cleared(1):
+		blimp_waves_destructed[0] = true
+		apply_bonus_defense_topup(1)
 	if ticks_game_running >= 88000 and ticks_game_running < 89000 and blimp_waves_destructed[0] == false: # destruct the blimps in wave 1
+		#current_attack_wave = 2
 		blimp_waves_destructed[0] = true
 		destruct_blimp_waves(1)
 		apply_bonus_defense_topup(1)
-	if ticks_game_running >= 90000 and ticks_game_running < 91000: # Check if wave 2 should be launched
+	if attack_wave_is_cleared(1) or (ticks_game_running >= 90000 and ticks_game_running < 91000): # Check if wave 2 should be launched
+		current_attack_wave = 2
 		if attack_waves_complete[1] == false:
 			attack_waves_complete[1] = true
 			intro_wave_banner(2)
 			launch_blimps_wave(2)
+	if ticks_game_running < 177000 and attack_wave_is_cleared(2):
+		blimp_waves_destructed[1] = true
+		apply_bonus_defense_topup(2)
 	if ticks_game_running >= 178000 and ticks_game_running < 179000 and blimp_waves_destructed[1] == false: # destruct the blimps in wave 2
 		blimp_waves_destructed[1] = true
 		destruct_blimp_waves(2)
 		apply_bonus_defense_topup(2)
-	if ticks_game_running >= 180000 and ticks_game_running < 181000: # Wave 3
+	if attack_wave_is_cleared(2) or (ticks_game_running >= 180000 and ticks_game_running < 181000): # Wave 3
+		current_attack_wave = 3
 		if attack_waves_complete[2] == false:
 			attack_waves_complete[2] = true
 			intro_wave_banner(3)
 			launch_blimps_wave(3)
-	if ticks_game_running >= 299000 and ticks_game_running < 300000 and blimp_waves_destructed[2] == false: # destruct the blimps in wave 2
-		blimp_waves_destructed[2] = true
+	if (current_attack_wave >= 3 and attack_wave_is_cleared(3)) or (ticks_game_running >= 299000 and ticks_game_running < 300000 and blimp_waves_destructed[2] == false): # destruct the blimps in wave 2		
 		destruct_blimp_waves(3)
+		if blimp_waves_destructed[2] == false:
+			var ticks_clearance_bonus = GAME_SURVIVE_COUNTDOWN - ticks_game_running
+		#determine if a significant amount of seconds is still left in the game (countdown) timer
+		blimp_waves_destructed[2] = true
 	if num_activated_shields > 0:
 		var current_time = timestamp_class.timestamp.new()
 		current_time.reset_time()
