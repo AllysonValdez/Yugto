@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scenes/UI/TitleScreen.gd" type="Script" id=1]
 [ext_resource path="res://Overview/playfocused.png" type="Texture" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://YUGTO!/logo2.png" type="Texture" id=7]
 [ext_resource path="res://Overview/quitfocused.png" type="Texture" id=8]
 [ext_resource path="res://Overview/optionsfocused.png" type="Texture" id=9]
+[ext_resource path="res://Scenes/UI/Credits/credits.png" type="Texture" id=10]
+[ext_resource path="res://Scenes/UI/Credits/creditsfocused.png" type="Texture" id=11]
 
 [node name="TitleScreen" type="Node2D"]
 script = ExtResource( 1 )
@@ -64,7 +66,7 @@ __meta__ = {
 margin_left = 28.0
 margin_top = 282.0
 margin_right = 345.0
-margin_bottom = 442.0
+margin_bottom = 527.0
 size_flags_horizontal = 4
 custom_constants/separation = 10
 alignment = 1
@@ -75,12 +77,20 @@ margin_bottom = 75.0
 texture_normal = ExtResource( 3 )
 texture_focused = ExtResource( 2 )
 
-[node name="Button-Menu-Quit" type="TextureButton" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Credits" type="TextureButton" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 margin_top = 85.0
 margin_right = 317.0
 margin_bottom = 160.0
+texture_normal = ExtResource( 10 )
+texture_hover = ExtResource( 11 )
+
+[node name="Button-Menu-Quit" type="TextureButton" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+margin_top = 170.0
+margin_right = 317.0
+margin_bottom = 245.0
 texture_normal = ExtResource( 4 )
 texture_focused = ExtResource( 8 )
 [connection signal="pressed" from="MarginContainer/HBoxContainer/OptionButton" to="." method="_on_OptionButton_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Play" to="." method="_on_TextureButton_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Credits" to="." method="_on_Credits_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Quit" to="." method="_on_TextureButton2_pressed"]

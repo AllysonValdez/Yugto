@@ -7,6 +7,8 @@ func _ready():
 func _physics_process(_delta):
 	if $"MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Play".is_hovered() == true:
 		$"MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Play".grab_focus()
+	if $"MarginContainer/VBoxContainer/VBoxContainer/Credits".is_hovered() == true:
+		$"MarginContainer/VBoxContainer/VBoxContainer/Credits".grab_focus()
 	if $"MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Quit".is_hovered() == true:
 		$"MarginContainer/VBoxContainer/VBoxContainer/Button-Menu-Quit".grab_focus()
 	if $MarginContainer/HBoxContainer/OptionButton.is_hovered() == true:
@@ -22,3 +24,6 @@ func _on_OptionButton_pressed():
 
 func _on_TextureButton2_pressed():
 	get_tree().quit()
+
+func _on_Credits_pressed():
+	get_tree().change_scene("res://Scenes/UI/Credits/CreditScene.tscn")
